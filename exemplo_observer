@@ -1,0 +1,81 @@
+from abc import ABC, abstractmethod
+
+# Interface Observer
+class Observer(ABC):
+    @abstractmethod
+    def update(self, message: str):
+        pass
+
+# Interface Subject
+class Subject(ABC):
+    @abstractmethod
+    def subscribe(self, observer: Observer):
+        pass
+
+    @abstractmethod
+    def unsubscribe(self, observer: Observer):
+        pass
+
+    @abstractmethod
+    def notify(self, message: str):
+        pass
+
+# Criação de classes concretas
+# Implementação do Subject
+class NotificationSystem(Subject):
+    def __init__(self):
+        self._observers = [] #cria uma lista vazia para armazenar os observadores
+
+    def subscribe(self, observer: Observer):
+        self._observers.append(observer)
+
+    def unsubscribe(self, observer: Observer):
+        self._observers.remove(observer)
+
+    def notify(self, message: str):
+        for observer in self._observers:
+            observer.update(message)
+
+# Implementação do Observer
+class Estudante(Observer):
+    def __init__(self, name):
+        self.name = name
+
+    def update(self, message: str):
+        print(f"{self.name} recebeu a notificação: {message}")
+
+# Criando Categorias de Notificação
+class NotificacaoCurso(NotificationSystem):
+    pass
+
+class NotificacaoMaterial(NotificationSystem):
+    pass
+
+class NotificacaoEvento(NotificationSystem):
+    pass
+
+# Demonstração
+
+
+   # novos alunos cadastrados no site
+alice = Estudante("Alice")
+bob = Estudante("Bob")
+
+    # Instancia objetos da classes de categoria que herdam NotificationSystem
+course_notifications = NotificacaoCurso()
+material_notifications = NotificacaoMaterial()
+event_notifications = NotificacaoEvento()
+
+    # Inscrever alunos nas categorias
+course_notifications.subscribe(alice)
+course_notifications.subscribe(bob)
+
+material_notifications.subscribe(alice)
+
+event_notifications.subscribe(bob)
+
+    # Notificar
+course_notifications.notify("Novo curso disponível: Python Avançado")
+material_notifications.notify("Novo material extra adicionado")
+event_notifications.notify("Live agendada para sexta-feira às 18h")
+
